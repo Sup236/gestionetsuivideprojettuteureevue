@@ -1,17 +1,26 @@
 import http from "../http-common";
+//import authHeader from "@/services/auth.header";
 
 class UserDataService {
 
-    create(data) {
-        return http.post("/signUp", data);
+    addUser(data) {
+         return http.post("/admin", data/*, { headers: authHeader() }*/);
     }
 
-    getAll() {
-        return http.get("/admin");
+    getAdmin() {
+        return http.get("/admin"/*, { headers: authHeader() }*/);
     }
 
-    signIn(data) {
-        return http.post("/signIn", data);
+    getEnseignant(){
+        return http.get("/enseignant");
+    }
+
+    getEtudiant(){
+        return http.get("/etudiant");
+    }
+
+    editUser(id) {
+        return http.post(`/admin${id}`);
     }
 
     findByName(name) {
@@ -19,7 +28,7 @@ class UserDataService {
     }
 
     delete(id) {
-        return http.delete(`/admin/${id}`);
+        return http.delete(`/admin${id}`);
     }
 }
 

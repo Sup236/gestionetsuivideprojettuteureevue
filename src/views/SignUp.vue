@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import UserDataService from "@/services/UserDataService";
+import AuthService from "@/services/auth.service";
 
 export default {
   name: "SignUp",
@@ -87,7 +87,7 @@ export default {
         password: this.user.password,
       }
 
-      UserDataService.create(data)
+      AuthService.signUp(data)
         .then((response) => {
           this.user.id = response.data.id;
           console.log(response.data);

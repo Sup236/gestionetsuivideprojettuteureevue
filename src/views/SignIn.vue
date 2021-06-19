@@ -1,6 +1,6 @@
 <template>
   <div class="submit-form mt-3 mx-auto">
-    <p class="headline">Connexion</p>
+    <p class="headline">Connextion</p>
 
     <div v-if="!submitted">
       <v-form ref="form" lazy-validation>
@@ -20,22 +20,21 @@
             required
         >
         </v-text-field>
-
-        <v-btn color="primary" class="v-btn" @click="connection" >Connexion</v-btn>
       </v-form>
+      <v-btn color="primary" class="mt-3" @click="connection">Connexion</v-btn>
     </div>
   </div>
 </template>
 
 <script>
-import UserDataService from "@/services/UserDataService";
+import AuthService from "@/services/auth.service";
 
 export default {
   name: "SignIn",
 
   data(){
     return{
-      user:{
+      user: {
         name: "",
         password: "",
       },
@@ -44,32 +43,21 @@ export default {
   },
 
   methods: {
-    connection(){
+    connection() {
       var data = {
         name: this.user.name,
         password: this.user.password,
       }
 
-      UserDataService.signIn(data)
-        .then((response) => {
-          this.user.id = response.data.id;
-          this.submitted = true;
-
-          if (response.data.role === 3){
-            this.$router.push("/admin");
-          }else if (response.data.role === 2) {
-            this.$router.push("/enseignant");
-          }else if (response.data.role === 1) {
-            this.$router.push("/etudiant");
-          }else {
-            this.$router.push("/profile");
-          }
-        })
+      AuthService.signIn(data).then((response) => {
+        this.user.name = response.data.name;
+        console.log(response.data);
+        this.submitted = true;
+      })
       .catch((e) => {
         console.log(e);
-      });
-
-    },
+      })
+    }
   }
 }
 </script>

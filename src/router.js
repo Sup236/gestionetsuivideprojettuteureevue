@@ -3,42 +3,62 @@ import Router from "vue-router";
 
 Vue.use(Router);
 
-export default new Router({
+let router = new Router({
     mode: "history",
     routes:[
         {
           path: "/SignIn",
           alias: "/SignIn",
           name: "/SignIn",
-          component: () => import("./components/SignIn")
+          component: () => import("./views/SignIn"),
+          // meta: {
+          //   guest: true
+          // }
         },
         {
           path: "/SignUp",
           alias: "/SignUp",
           name: "SignUp",
-          component: () => import("./components/SignUp")
+          component: () => import("./views/SignUp"),
+            // meta: {
+            //     guest: true
+            // }
         },
         {
             path: "/projects",
             alias: "/projects",
             name: "projects",
-            component: () => import("./components/ProjectList")
+            component: () => import("./components/ProjectList"),
+            // meta: {
+            //     requiresAuth: true
+            // }
         },
         {
             path: "/projects/:id",
             name: "project-details",
-            component: () => import("./components/Project")
+            component: () => import("./views/Project"),
+            // meta:{
+            //     requiresAuth: true
+            // }
         },
         {
             path: "/ajouter",
             name: "ajouter",
-            component: () => import("./components/AddProject")
+            component: () => import("./components/AddProject"),
+            // meta: {
+            //     requiresAuth: true
+            // }
         },
         {
             path: "/admin",
-            alias: "/admin",
             name: "/admin",
-            component: () => import("./components/admin")
-        }
+            component: () => import("./views/admin"),
+            // meta: {
+            //     requiresAuth: true,
+            //     is_admin: true
+            // }
+        },
     ]
 });
+
+export default router;

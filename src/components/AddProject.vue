@@ -110,7 +110,7 @@ export default {
     },
 
     getUsers() {
-      UserDataService.getAll().then((data) => {
+      UserDataService.getAdmin().then((data) => {
         this.project.users = JSON.parse(JSON.stringify(data.data));
         console.log(this.project.users);
         this.isReady = true;

@@ -72,9 +72,9 @@ export default {
   methods: {
     getProject(id){
       ProjectDataService.get(id)
-        .then((reponse) => {
-          this.currentProject = reponse.data;
-          console.log(reponse.data);
+        .then((response) => {
+          this.currentProject = response.data;
+          console.log(response.data);
         })
         .catch((e) => {
           console.log(e);
@@ -90,9 +90,9 @@ export default {
       };
 
       ProjectDataService.update(this.currentProject.id, data)
-        .then((reponse) => {
+        .then((response) => {
           this.currentProject.etat = etat;
-          console.log(reponse.data);
+          console.log(response.data);
         })
         .catch((e) => {
           console.log(e);
@@ -101,8 +101,8 @@ export default {
 
     updateProject(){
       ProjectDataService.update(this.currentProject.id, this.currentProject)
-        .then((reponse) => {
-          console.log(reponse.data);
+        .then((response) => {
+          console.log(response.data);
           this.message = "Le projet a bien été mis à jour";
         })
         .catch((e) => {
@@ -112,8 +112,8 @@ export default {
 
     deleteProject(){
       ProjectDataService.delete(this.currentProject.id)
-        .then((reponse) => {
-          console.log(reponse.data);
+        .then((response) => {
+          console.log(response.data);
           this.$router.push({ name: "projects" });
         })
         .catch((e) => {
