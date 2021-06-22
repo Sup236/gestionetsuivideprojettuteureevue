@@ -4,14 +4,15 @@
       <div class="d-flex align-center">
         Gestion et suivi de projet tuteurée
       </div>
+      <div>
+        <v-icon @click="$router.push('/SignUp')" class="pa-4 ml-5">
+          mdi-account-plus
+        </v-icon>
 
-      <v-btn to="/SignUp" class="pa-4 ml-5 left">
-        S'inscrire
-      </v-btn>
-
-      <v-btn to="/SignIn" class="pa-4 ml-5 left">
-        Connexion
-      </v-btn>
+        <v-icon @click="$router.push('/SignIn')" class="pa-4 ml-5">
+          mdi-account-check
+        </v-icon>
+      </div>
     </v-app-bar>
 
     <v-main>

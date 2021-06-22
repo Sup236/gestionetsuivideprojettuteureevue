@@ -8,7 +8,6 @@ let router = new Router({
     routes:[
         {
           path: "/SignIn",
-          alias: "/SignIn",
           name: "/SignIn",
           component: () => import("./views/SignIn"),
           // meta: {
@@ -17,7 +16,6 @@ let router = new Router({
         },
         {
           path: "/SignUp",
-          alias: "/SignUp",
           name: "SignUp",
           component: () => import("./views/SignUp"),
             // meta: {
@@ -26,7 +24,6 @@ let router = new Router({
         },
         {
             path: "/projects",
-            alias: "/projects",
             name: "projects",
             component: () => import("./components/ProjectList"),
             // meta: {
@@ -57,6 +54,11 @@ let router = new Router({
             //     requiresAuth: true,
             //     is_admin: true
             // }
+        },
+        {
+            path: "/enseignant",
+            name: "/enseignant",
+            component: () => import("./views/Enseignant"),
         },
     ]
 });

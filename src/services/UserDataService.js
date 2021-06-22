@@ -16,15 +16,15 @@ class UserDataService {
     }
 
     getEtudiant(){
-        return http.get("/etudiant");
+        return http.get("/enseignant/add");
     }
 
-    editUser(id) {
-        return http.post(`/admin${id}`);
+    editUser(id, data) {
+        return http.put(`/admin${id}`, data);
     }
 
     findByName(name) {
-        return http.get(`/admin/users?name=${name}`);
+        return http.get(`/admin${name}`);
     }
 
     delete(id) {

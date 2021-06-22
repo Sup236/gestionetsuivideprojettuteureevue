@@ -1,15 +1,16 @@
 <template>
   <v-row align="center" class="list px-3 mx-auto">
     <v-col clos="12" md="8">
-      <v-text-field v-model="name" label="Recherche par name"></v-text-field>
+      <v-text-field v-model="search" label="Recherche" append-icon="mdi-magnify" single-line hide-details></v-text-field>
     </v-col>
 
     <v-col cols="12" sm="12">
       <v-data-table
         :headers="headers"
         :items="users"
-        sort-by="name"
+        :search="search"
         class="elevation-1"
+        hide-default-footer
         >
         <template v-slot:top>
           <v-toolbar flat color="white">
@@ -79,7 +80,7 @@
                         </v-autocomplete>
                       </v-col>
 
-                      <v-col clos="12" sm="6" md="4" v-if="editedIndex === -1">
+                      <v-col clos="12" sm="6" md="4">
                         <v-text-field
                             v-model="editedUser.password"
                             :rules="[(v) => !!v || 'Il faut un mot de passe']"
@@ -131,15 +132,16 @@ export default {
   name: "admin",
   data(){
     return {
+      search: '',
       dialog: false,
       users: [],
       name: "",
       headers: [
-        { text: "Nom",align: "Start", sortable: false, value: "name" },
-        { text: "Prenom", value: "firstName", sortable: false },
-        { text: "Mail", value: "email", sortable: false },
-        { text: "Role", value: "role", sortable: false },
-        { text: "Action", value: "actions", sortable: false}
+        { text: "Noms",align: "Start", value: "name" },
+        { text: "Prenoms", value: "firstName" },
+        { text: "Mails", value: "email" },
+        { text: "Roles", value: "role" },
+        { text: "Actions", value: "actions", sortable: false }
       ],
       editedIndex: -1,
       editedUser: {
@@ -165,7 +167,7 @@ export default {
 
   computed: {
     formTitle () {
-      return this.editedIndex === -1 ? 'Nouvelle utilisateur' : 'Modification'
+      return this.editedIndex === -1 ? 'Nouvel utilisateur' : 'Modification'
     },
   },
 
@@ -198,23 +200,24 @@ export default {
     },
 
     deleteUser (user) {
-      const index = this.users.indexOf(user)
-      confirm('êtes vous dur de vouloir suprimmer cette utilisateur ?') && this.users.splice(index, 1)
-      UserDataService.delete(user.id)
+      const index = this.users.indexOf(user);
+      confirm('êtes vous dur de vouloir suprimmer cette utilisateur ?') && this.users.splice(index, 1);
+      UserDataService.delete(user.id);
     },
 
     close () {
       this.dialog = false;
-      this.$nextTick(()=>{
+      this.$nextTick(()=> {
         this.editedUser = Object.assign({}, this.defaultUser);
         this.editedIndex = -1;
       })
+      this.initialize();
     },
 
     save () {
       if (this.editedIndex > -1) {
         Object.assign(this.users[this.editedIndex], this.editedUser);
-        UserDataService.editUser(this.editedUser.id);
+        UserDataService.editUser(this.editedUser.id, this.editedUser);
       }else {
         UserDataService.addUser(this.editedUser)
       }
