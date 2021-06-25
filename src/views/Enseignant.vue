@@ -1,16 +1,17 @@
 <template>
   <v-row align="center" class="list px-3 mx-auto">
     <v-col cols="12" md="8">
-      <v-text-field v-model="search" label="Recherche" append-icon="mdi-magnify" single-line hide-details></v-text-field>
+      <v-text-field v-model="search" label="Recherche" append-icon="mdi-magnify" single-line
+                    hide-details></v-text-field>
     </v-col>
 
     <v-col cols="12" sm="12">
       <v-data-table
-        :headers="headers"
-        :items="projects"
-        :search="search"
-        class="elevation-1"
-        hide-default-footer
+          :headers="headers"
+          :items="projects"
+          :search="search"
+          class="elevation-1"
+          hide-default-footer
       >
         <template v-slot:top>
           <v-toolbar flat color="white">
@@ -38,10 +39,10 @@
                     <v-row>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedProject.sujet"
-                          :rules="[(v) => !!v || 'Il faut un sujet']"
-                          label="Sujet"
-                          required
+                            v-model="editedProject.sujet"
+                            :rules="[(v) => !!v || 'Il faut un sujet']"
+                            label="Sujet"
+                            required
                         >
                         </v-text-field>
                       </v-col>
@@ -72,10 +73,18 @@
                         >
                         </v-autocomplete>
                       </v-col>
+
+                      <v-col cols="12" s="6" md="4">
+                        <v-checkbox
+                            v-model="editedProject.etat"
+                            label="Archivage"
+                            required
+                        >
+                        </v-checkbox>
+                      </v-col>
                     </v-row>
                   </v-container>
-                </v-card-text>.
-
+                </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
@@ -90,21 +99,16 @@
               small
               class="mr-2"
               @click="editProject(item)"
+              color="primary"
           >
             mdi-pencil
           </v-icon>
           <v-icon
               small
-              class="mr-2"
+              color="red"
               @click="deleteProject(item)"
           >
             mdi-delete
-          </v-icon>
-          <v-icon
-            small
-            @click="archiveProject"
-          >
-            mdi-dresser
           </v-icon>
         </template>
         <template v-slot:no-data>
@@ -118,19 +122,20 @@
 <script>
 import ProjectDataService from "@/services/ProjectDataService";
 import UserDataService from "@/services/UserDataService";
+
 export default {
   name: "Enseignant",
-  data(){
+  data() {
     return {
       search: '',
       dialog: false,
       projects: [],
       name: "",
       headers: [
-        { text: "Sujets", align: "Start", value: "sujet" },
-        { text: "Années", type: "date",value: "annee" },
-        { text: "Utilisateurs", value: "users" },
-        { text: "Actions", value: "actions", sortable: false }
+        {text: "Sujets", align: "Start", value: "sujet"},
+        {text: "Années", type: "date", value: "annee"},
+        {text: "Utilisateurs", value: "users"},
+        {text: "Actions", value: "actions", sortable: false}
       ],
       editedIndex: -1,
       editedProject: {
@@ -160,7 +165,7 @@ export default {
   },
 
   watch: {
-    dialog (val) {
+    dialog(val) {
       val || this.close()
     },
   },
@@ -174,10 +179,9 @@ export default {
     initializeUser() {
       UserDataService.getEtudiant().then((response) => {
         const dataUser = JSON.parse(JSON.stringify(response.data))
-        for (let i = 0; i < dataUser.length; i++){
+        for (let i = 0; i < dataUser.length; i++) {
           this.users.push(dataUser[i]);
         }
-        console.log(this.users)
       }).catch((e) => {
         console.log(e);
       });
@@ -187,7 +191,7 @@ export default {
       ProjectDataService.getAll()
           .then((response) => {
             this.projects = response.data.map(this.getDisplayProject);
-            console.log("projects"+response.data);
+            console.log(response.data);
           })
           .catch((e) => {
             console.log(e);
@@ -202,8 +206,8 @@ export default {
 
     deleteProject(project) {
       const index = this.projects.indexOf(project);
-      confirm('êtes vous sur de vouloir suprimmer se projet ?') && this.projects.splice(index,1);
-      ProjectDataService.delete(project.id);
+      if (confirm('êtes vous sur de vouloir suprimmer se projet ?') && this.projects.splice(index, 1))
+        ProjectDataService.delete(project.id);
     },
 
     close() {
@@ -212,35 +216,54 @@ export default {
         this.editedProject = Object.assign({}, this.defaultProject);
         this.editedIndex = -1;
       })
+      this.initialize();
     },
 
-    save () {
-      if (this.editedIndex > -1){
+    save() {
+      if (this.editedIndex > -1) {
         Object.assign(this.projects[this.editedIndex], this.editedProject);
-        ProjectDataService.update(this.editedProject.id, this.editedProject);
-        ProjectDataService.addUserInProject(this.editedProject.users, this.editedProject.id);
-        console.log(this.editedProject.users);
-      }else {
-        ProjectDataService.create(this.editedProject);
-        ProjectDataService.addUserInProject(this.users.id, this.editedProject.id)
+        if (this.editedProject.sujet !== this.projects.sujet || this.editedProject.annee !== this.projects.annee) {
+          ProjectDataService.update(this.editedProject.id, this.editedProject).then((response) => {
+            console.log("Update: " + response.data.message);
+          })
+        }
+        if (this.editedProject.users !== []) {
+          console.log(this.editedProject.users)
+          for (let userId = 0; userId < this.editedProject.users.length; userId++) {
+            for (let projectId = 0; projectId < this.projects.length; projectId++) {
+              if (this.projects[projectId].sujet === this.editedProject.sujet) {
+                ProjectDataService.addUserInProject(this.editedProject.users[userId].id, this.projects[projectId].id).then((response) => {
+                  console.log("add user in project: " + response.data.message);
+                })
+              }
+            }
+          }
+        }
+      } else {
+        ProjectDataService.create(this.editedProject)
+        if (this.editedProject.users !== []) {
+          for (let userId = 0; userId < this.editedProject.users.length; userId++) {
+            ProjectDataService.addUserInProject(this.editedProject.users[userId].id, this.editedProject.id).then((response) => {
+              console.log("add user in project: " + response.data.message);
+            })
+          }
+        }
       }
       this.close();
     },
 
-    getDisplayProject(project){
+    getDisplayProject(project) {
+      let userList = [];
+      project.users.forEach(user => {
+        userList += user.name+" "
+      })
       return {
         id: project.id,
-        sujet: project.sujet.length > 10 ? project.sujet.substr(0,10) : project.sujet,
+        sujet: project.sujet.length > 10 ? project.sujet.substr(0, 10) : project.sujet,
         annee: project.annee,
-        users: project.users,
-        etat: project.etat ? "Archiver" : "Non Archiver",
+        users: userList,
       };
     },
-
-    archiveProject(project) {
-      ProjectDataService.archive(project.id);
-      this.initialize();
-    }
   },
 
   mounted() {

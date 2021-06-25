@@ -13,8 +13,14 @@ class ProjectDataService {
         return http.post("/enseignant", data);
     }
 
-    addUserInProject(project, user){
-        return http.post(`/enseignant`,user, project);
+    addUserInProject(user, project){
+        console.log("user : "+user);
+        console.log("projet : "+project);
+        return http.post(`/enseignant/addUser`,
+            {
+                projectId: project,
+                userId: user
+            });
     }
 
     update(id, data) {
@@ -30,7 +36,7 @@ class ProjectDataService {
     }
 
     archive(id) {
-        return http.post(`/enseignant${id}`)
+        return http.post(`/enseignant/archive${id}`)
     }
 }
 
