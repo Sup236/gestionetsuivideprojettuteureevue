@@ -60,14 +60,30 @@
 
                       <v-col cols="12" sm="6" md="4">
                         <v-autocomplete
-                            v-model="editedProject.users"
+                            v-model="editedProject.etudiants"
                             :rules="[(v) => !!v || 'Il faut au moins un utilisateur']"
-                            :items="users"
+                            :items="etudiants"
                             item-text="name"
                             outlined
                             dense
                             multiple
-                            label="Utilisateur"
+                            label="Etudiants"
+                            return-object
+                            required
+                        >
+                        </v-autocomplete>
+                      </v-col>
+
+                      <v-col cols="12" sm="6" md="4">
+                        <v-autocomplete
+                            v-model="editedProject.enseignants"
+                            :rules="[(v) => !!v || 'Il faut au moins un utilisateur']"
+                            :items="enseignants"
+                            item-text="name"
+                            outlined
+                            dense
+                            multiple
+                            label="Enseignants"
                             return-object
                             required
                         >
@@ -134,7 +150,8 @@ export default {
       headers: [
         {text: "Sujets", align: "Start", value: "sujet"},
         {text: "Années", type: "date", value: "annee"},
-        {text: "Utilisateurs", value: "users"},
+        {text: "Etudiants", value: "etudiants"},
+        {text: "Tuteures", value: "enseignants"},
         {text: "Actions", value: "actions", sortable: false}
       ],
       editedIndex: -1,
@@ -142,18 +159,21 @@ export default {
         id: null,
         sujet: "",
         annee: "",
-        users: [],
+        etudiants: [],
+        enseignants: [],
         etat: false,
       },
       defaultProject: {
         id: null,
         sujet: "",
         annee: "",
-        users: [],
+        etudiants: [],
+        enseignants: [],
         etat: false,
       },
 
-      users: []
+      etudiants: [],
+      enseignants: [],
 
     };
   },
@@ -172,15 +192,27 @@ export default {
 
   created() {
     this.initialize();
-    this.initializeUser();
+    this.initializeEtudiants();
+    this.initializeEnseignant();
   },
 
   methods: {
-    initializeUser() {
+    initializeEnseignant(){
+      UserDataService.getEnseignant().then((response) => {
+        const dataEnseignant = JSON.parse(JSON.stringify(response.data));
+        for (let i = 0; i < dataEnseignant.length; i++){
+          this.enseignants.push(dataEnseignant[i]);
+        }
+      }).catch((e) => {
+        console.log(e);
+      });
+    },
+
+    initializeEtudiants() {
       UserDataService.getEtudiant().then((response) => {
-        const dataUser = JSON.parse(JSON.stringify(response.data))
-        for (let i = 0; i < dataUser.length; i++) {
-          this.users.push(dataUser[i]);
+        const dataEtudiant = JSON.parse(JSON.stringify(response.data));
+        for (let i = 0; i < dataEtudiant.length; i++) {
+          this.etudiants.push(dataEtudiant[i]);
         }
       }).catch((e) => {
         console.log(e);
@@ -217,51 +249,91 @@ export default {
         this.editedIndex = -1;
       })
       this.initialize();
+      this.initializeEtudiants();
+      this.initializeEnseignant();
     },
 
     save() {
       if (this.editedIndex > -1) {
         Object.assign(this.projects[this.editedIndex], this.editedProject);
-        if (this.editedProject.sujet !== this.projects.sujet || this.editedProject.annee !== this.projects.annee) {
+        if (this.editedProject.sujet !== this.projects[this.editedIndex].sujet || this.editedProject.annee !== this.projects[this.editedIndex].annee) {
           ProjectDataService.update(this.editedProject.id, this.editedProject).then((response) => {
             console.log("Update: " + response.data.message);
           })
         }
-        if (this.editedProject.users !== []) {
-          console.log(this.editedProject.users)
-          for (let userId = 0; userId < this.editedProject.users.length; userId++) {
-            for (let projectId = 0; projectId < this.projects.length; projectId++) {
-              if (this.projects[projectId].sujet === this.editedProject.sujet) {
-                ProjectDataService.addUserInProject(this.editedProject.users[userId].id, this.projects[projectId].id).then((response) => {
-                  console.log("add user in project: " + response.data.message);
-                })
-              }
-            }
-          }
-        }
-      } else {
-        ProjectDataService.create(this.editedProject)
-        if (this.editedProject.users !== []) {
-          for (let userId = 0; userId < this.editedProject.users.length; userId++) {
-            ProjectDataService.addUserInProject(this.editedProject.users[userId].id, this.editedProject.id).then((response) => {
+        if (this.editedProject.etudiants !== []) {
+          console.log(this.editedProject.etudiants)
+
+          this.editedProject.etudiants.forEach(user => {
+            console.log(user);
+            console.log(this.editedProject);
+            ProjectDataService.addUserInProject(user.id, this.editedProject.id).then((response) => {
               console.log("add user in project: " + response.data.message);
             })
-          }
+          })
         }
+        if (this.editedProject.enseignants !== []) {
+          console.log(this.editedProject.enseignants)
+
+          this.editedProject.enseignants.forEach(user => {
+            console.log(user);
+            console.log(this.editedProject);
+            ProjectDataService.addUserInProject(user.id, this.editedProject.id).then((response) => {
+              console.log("add user in project: " + response.data.message);
+            })
+          })
+        }
+      } else {
+        console.log(this.editedProject)
+        let etudiants = this.editedProject.etudiants
+        let enseignants = this.editedProject.enseignants
+        ProjectDataService.create(this.editedProject).then((response) => {
+          this.editedProject.id = response.data.id;
+          this.editedProject.etudiants = etudiants;
+          this.editedProject.enseignants = enseignants;
+
+          if (this.editedProject.etudiants !== []) {
+            this.editedProject.etudiants.forEach(user => {
+              ProjectDataService.addUserInProject(user.id, this.editedProject.id).then((response) => {
+                console.log("add user in project: " + response.data.message);
+              })
+            })
+          }
+          if (this.editedProject.enseignants !== []) {
+            console.log(this.editedProject.enseignants)
+
+            this.editedProject.enseignants.forEach(user => {
+              console.log(user);
+              console.log(this.editedProject);
+              ProjectDataService.addUserInProject(user.id, this.editedProject.id).then((response) => {
+                console.log("add user in project: " + response.data.message);
+              })
+            })
+          }
+
+        })
       }
       this.close();
     },
 
     getDisplayProject(project) {
-      let userList = [];
+      let etudiantList = [];
+      let enseignantList = [];
       project.users.forEach(user => {
-        userList += user.name+" "
+        if (user.role === 1) {
+          this.etudiants.push(user)
+          etudiantList.push(user.name)
+        }else if (user.role === 2) {
+          this.enseignants.push(user)
+          enseignantList.push(user.name)
+        }
       })
       return {
         id: project.id,
         sujet: project.sujet.length > 10 ? project.sujet.substr(0, 10) : project.sujet,
         annee: project.annee,
-        users: userList,
+        etudiants: etudiantList,
+        enseignants: enseignantList,
       };
     },
   },

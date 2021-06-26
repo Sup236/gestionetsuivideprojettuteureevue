@@ -23,26 +23,10 @@ let router = new Router({
             // }
         },
         {
-            path: "/projects",
-            name: "projects",
-            component: () => import("./components/ProjectList"),
-            // meta: {
-            //     requiresAuth: true
-            // }
-        },
-        {
             path: "/projects/:id",
             name: "project-details",
             component: () => import("./views/Project"),
             // meta:{
-            //     requiresAuth: true
-            // }
-        },
-        {
-            path: "/ajouter",
-            name: "ajouter",
-            component: () => import("./components/AddProject"),
-            // meta: {
             //     requiresAuth: true
             // }
         },

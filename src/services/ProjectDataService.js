@@ -16,6 +16,7 @@ class ProjectDataService {
     addUserInProject(user, project){
         console.log("user : "+user);
         console.log("projet : "+project);
+        if(!user || !project) return;
         return http.post(`/enseignant/addUser`,
             {
                 projectId: project,

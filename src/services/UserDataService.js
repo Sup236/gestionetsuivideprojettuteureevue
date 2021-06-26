@@ -12,11 +12,11 @@ class UserDataService {
     }
 
     getEnseignant(){
-        return http.get("/enseignant");
+        return http.get("/enseignant/getEnseignants");
     }
 
     getEtudiant(){
-        return http.get("/enseignant/add");
+        return http.get("/enseignant/getEtudiants");
     }
 
     editUser(id, data) {
