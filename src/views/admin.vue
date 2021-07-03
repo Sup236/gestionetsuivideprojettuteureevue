@@ -106,6 +106,7 @@
         <template v-slot:item.actions="{ item }">
           <v-icon
             small
+            color="primary"
             class="mr-2"
             @click="editUser(item)"
           >
@@ -113,6 +114,7 @@
           </v-icon>
           <v-icon
             small
+            color="red"
             @click="deleteUser(item)"
           >
             mdi-delete

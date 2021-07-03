@@ -1,63 +1,39 @@
 <template>
-  <div v-if="currentProject" class="edit-form py-3">
-    <p class="headline">Modiffier un projet</p>
-    <v-form ref="form" lazy-validation>
-      <v-text-field
-        v-model="currentProject.sujet"
-        :rules="[(v) => !!v || 'Il faut un sujet']"
-        label="Sujet"
-        required
-      ></v-text-field>
+  <v-row v-if="currentProject !== null">
+    <v-col cols="12">
+      <h1 class="mt-5 px-5">Projet tuteuré: {{ currentProject.sujet}}</h1>
+    </v-col>
 
-      <v-text-field
-        v-model="currentProject.annee"
-        :rules="[(v) => !!v || 'Il faut une date pour se projet']"
-        label="Annee"
-        required
-      ></v-text-field>
-
-      <label><strong>Etat:</strong></label>
-      {{ currentProject.etat ? "Archiver" : "Non archiver" }}
-
-      <v-divider class="my-5"></v-divider>
-
-      <v-btn v-if="currentProject.etat"
-             @click="updateArchivage(false)"
-             color="primary"
-             small
-             class="mr-2"
+    <v-col cols="12" md="3">
+      <v-file-input
+          v-model="files"
+          label="Compte-rendu de Réunion"
+          show-size
+          small-chips
+          multiple
+          clearable
+          @click="mkdirProject(currentProject)"
+          @change="upload($event)"
       >
-        Ne pas archiver
-      </v-btn>
-
-      <v-btn v-else
-             @click="updateArchivage(true)"
-             color="primary"
-             small
-             class="mr-2"
-      >
-        Archiver
-      </v-btn>
-
-      <v-btn color="error" small class="mr-2" @click="deleteProject">
-        Supprimer
-      </v-btn>
-
-      <v-btn color="success" small @click="updateProject">
-        Mettre à jour
-      </v-btn>
-    </v-form>
-
-    <p class="mt-3">{{ message }}</p>
-  </div>
-
-  <div v-else>
-    <p>Clicker sur un projet</p>
-  </div>
+        <template v-slot:selection="{ text, index}">
+          <v-chip
+            small
+            text-color="white"
+            color="#295671"
+            close
+            @click:close="remove(index)"
+          >
+            {{ text }}
+          </v-chip>
+        </template>
+      </v-file-input>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
 import ProjectDataService from "@/services/ProjectDataService";
+import FileDataService from "@/services/FileDataService";
 
 export default {
   name: "Project",
@@ -65,8 +41,16 @@ export default {
   data(){
     return {
       currentProject: null,
+      currentFile : undefined,
+      files: [],
       message: "",
     };
+  },
+
+  created(){
+    const currentURL = document.location.href;
+    const projectId = currentURL.substring(currentURL.lastIndexOf(":")+1);
+    this.getProject(projectId);
   },
 
   methods: {
@@ -81,56 +65,31 @@ export default {
         });
     },
 
-    updateArchivage(etat){
-      var data = {
-        id: this.currentProject.id,
-        sujet: this.currentProject.sujet,
-        annee: this.currentProject.annee,
-        etat: etat,
-      };
-
-      ProjectDataService.update(this.currentProject.id, data)
-        .then((response) => {
-          this.currentProject.etat = etat;
-          console.log(response.data);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+    mkdirProject(project) {
+      console.log(project)
+      FileDataService.mkdirProject(project).then((response) => {
+        console.log(response.data.message);
+      });
     },
 
-    updateProject(){
-      ProjectDataService.update(this.currentProject.id, this.currentProject)
-        .then((response) => {
-          console.log(response.data);
-          this.message = "Le projet a bien été mis à jour";
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+    remove(index) {
+      this.files.splice(index, 1)
     },
 
-    deleteProject(){
-      ProjectDataService.delete(this.currentProject.id)
-        .then((response) => {
-          console.log(response.data);
-          this.$router.push({ name: "projects" });
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
-  },
-  mounted() {
-    this.message = "";
-    this.getProject(this.$route.params.id);
+    async upload(e) {
+      console.log(e);
+
+      var someFile = new File(e, 'test.pdf', {
+        contentType: "application/pdf"
+      })
+
+      FileDataService.upload(someFile, this.currentProject).then((response) => {
+            console.log(response.data.message);
+          }).catch(e => Error(e));
+    }
   },
 };
 </script>
 
 <style>
-  .edit-form {
-    max-width: 300px;
-    margin: auto;
-  }
 </style>

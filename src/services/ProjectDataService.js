@@ -5,6 +5,10 @@ class ProjectDataService {
         return http.get("/enseignant");
     }
 
+    getAllArchive() {
+        return http.get("/enseignant/archive");
+    }
+
     get(id){
         return http.get(`/enseignant${id}`);
     }
@@ -14,8 +18,6 @@ class ProjectDataService {
     }
 
     addUserInProject(user, project){
-        console.log("user : "+user);
-        console.log("projet : "+project);
         if(!user || !project) return;
         return http.post(`/enseignant/addUser`,
             {
@@ -32,12 +34,8 @@ class ProjectDataService {
         return http.delete(`/enseignant${id}`);
     }
 
-    findBySujet(sujet) {
-        return http.get(`/projects?sujet=${sujet}`);
-    }
-
     archive(id) {
-        return http.post(`/enseignant/archive${id}`)
+        return http.post(`/enseignant${id}`)
     }
 }
 

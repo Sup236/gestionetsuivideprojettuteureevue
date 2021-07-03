@@ -8,7 +8,7 @@ let router = new Router({
     routes:[
         {
           path: "/SignIn",
-          name: "/SignIn",
+          name: "SignIn",
           component: () => import("./views/SignIn"),
           // meta: {
           //   guest: true
@@ -23,7 +23,7 @@ let router = new Router({
             // }
         },
         {
-            path: "/projects/:id",
+            path: "/enseignant/projects:id",
             name: "project-details",
             component: () => import("./views/Project"),
             // meta:{
@@ -32,7 +32,7 @@ let router = new Router({
         },
         {
             path: "/admin",
-            name: "/admin",
+            name: "admin",
             component: () => import("./views/admin"),
             // meta: {
             //     requiresAuth: true,
@@ -41,8 +41,14 @@ let router = new Router({
         },
         {
             path: "/enseignant",
-            name: "/enseignant",
+            name: "enseignant",
             component: () => import("./views/Enseignant"),
+        },
+
+        {
+            path: "/enseignant/archive",
+            name: "archive",
+            component: () => import("./views/archive"),
         },
     ]
 });

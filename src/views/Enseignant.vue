@@ -1,8 +1,7 @@
 <template>
   <v-row align="center" class="list px-3 mx-auto">
     <v-col cols="12" md="8">
-      <v-text-field v-model="search" label="Recherche" append-icon="mdi-magnify" single-line
-                    hide-details></v-text-field>
+      <v-text-field v-model="search" label="Recherche" append-icon="mdi-magnify" single-line hide-details></v-text-field>
     </v-col>
 
     <v-col cols="12" sm="12">
@@ -11,13 +10,19 @@
           :items="projects"
           :search="search"
           class="elevation-1"
-          hide-default-footer
       >
         <template v-slot:top>
           <v-toolbar flat color="white">
             <v-toolbar-title>Projets Tuteurées</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
+            <v-btn color="amber accent-3"
+                   dark
+                   class="mb-2 mr-8"
+                   @click="archivePage"
+            >
+              Archive
+            </v-btn>
             <v-dialog v-model="dialog" max-width="800px">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn color="primary"
@@ -119,12 +124,21 @@
           >
             mdi-pencil
           </v-icon>
+
           <v-icon
               small
               color="red"
+              class="mr-2"
               @click="deleteProject(item)"
           >
             mdi-delete
+          </v-icon>
+          <v-icon
+            small
+            color="green darken-1"
+            @click="projectDetails(item)"
+          >
+            mdi-arrow-right-bold
           </v-icon>
         </template>
         <template v-slot:no-data>
@@ -256,7 +270,9 @@ export default {
     save() {
       if (this.editedIndex > -1) {
         Object.assign(this.projects[this.editedIndex], this.editedProject);
-        if (this.editedProject.sujet !== this.projects[this.editedIndex].sujet || this.editedProject.annee !== this.projects[this.editedIndex].annee) {
+        if (this.editedProject.sujet !== this.projects[this.editedIndex].sujet ||
+            this.editedProject.annee !== this.projects[this.editedIndex].annee ||
+            this.projects[this.editedIndex].etat) {
           ProjectDataService.update(this.editedProject.id, this.editedProject).then((response) => {
             console.log("Update: " + response.data.message);
           })
@@ -265,11 +281,7 @@ export default {
           console.log(this.editedProject.etudiants)
 
           this.editedProject.etudiants.forEach(user => {
-            console.log(user);
-            console.log(this.editedProject);
-            ProjectDataService.addUserInProject(user.id, this.editedProject.id).then((response) => {
-              console.log("add user in project: " + response.data.message);
-            })
+            ProjectDataService.addUserInProject(user.id, this.editedProject.id)
           })
         }
         if (this.editedProject.enseignants !== []) {
@@ -277,14 +289,10 @@ export default {
 
           this.editedProject.enseignants.forEach(user => {
             console.log(user);
-            console.log(this.editedProject);
-            ProjectDataService.addUserInProject(user.id, this.editedProject.id).then((response) => {
-              console.log("add user in project: " + response.data.message);
-            })
+            ProjectDataService.addUserInProject(user.id, this.editedProject.id)
           })
         }
       } else {
-        console.log(this.editedProject)
         let etudiants = this.editedProject.etudiants
         let enseignants = this.editedProject.enseignants
         ProjectDataService.create(this.editedProject).then((response) => {
@@ -300,11 +308,7 @@ export default {
             })
           }
           if (this.editedProject.enseignants !== []) {
-            console.log(this.editedProject.enseignants)
-
             this.editedProject.enseignants.forEach(user => {
-              console.log(user);
-              console.log(this.editedProject);
               ProjectDataService.addUserInProject(user.id, this.editedProject.id).then((response) => {
                 console.log("add user in project: " + response.data.message);
               })
@@ -314,6 +318,10 @@ export default {
         })
       }
       this.close();
+    },
+
+    projectDetails(project) {
+      this.$router.push(`/enseignant/projects:${project.id}`)
     },
 
     getDisplayProject(project) {
@@ -336,6 +344,10 @@ export default {
         enseignants: enseignantList,
       };
     },
+
+    archivePage() {
+      return this.$router.push('/enseignant/archive')
+    }
   },
 
   mounted() {
