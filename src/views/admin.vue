@@ -125,6 +125,25 @@
         </template>
       </v-data-table>
     </v-col>
+
+    <v-col cols="12" md="5">
+      <h4>Légende des Rôles</h4>
+      <ul>
+        <li>
+          0 : Nouvelle utilisateur, en attente d'un rôle
+        </li>
+        <li>
+          1 : Rôle Etudiant
+        </li>
+        <li>
+          2 : Rôle Enseignant
+        </li>
+        <li>
+          3 : Rôle Admin
+        </li>
+      </ul>
+    </v-col>
+
   </v-row>
 </template>
 
@@ -244,8 +263,4 @@ export default {
 </script>
 
 <style>
-  .list{
-    max-width: 1000px;
-    margin: auto;
-  }
 </style>

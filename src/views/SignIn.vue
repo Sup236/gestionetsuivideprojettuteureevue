@@ -44,7 +44,7 @@ export default {
 
   methods: {
     connection() {
-      var data = {
+      let data = {
         name: this.user.name,
         password: this.user.password,
       }

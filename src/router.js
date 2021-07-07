@@ -10,25 +10,25 @@ let router = new Router({
           path: "/SignIn",
           name: "SignIn",
           component: () => import("./views/SignIn"),
-          // meta: {
-          //   guest: true
-          // }
+          meta: {
+            guest: true
+          }
         },
         {
           path: "/SignUp",
           name: "SignUp",
           component: () => import("./views/SignUp"),
-            // meta: {
-            //     guest: true
-            // }
+            meta: {
+                guest: true
+            }
         },
         {
             path: "/enseignant/projects:id",
             name: "project-details",
             component: () => import("./views/Project"),
-            // meta:{
-            //     requiresAuth: true
-            // }
+            meta:{
+                requiresAuth: true
+            }
         },
         {
             path: "/admin",

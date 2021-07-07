@@ -6,14 +6,14 @@
 
     <v-col cols="12" md="3">
       <v-file-input
-          v-model="files"
+          type="file"
           label="Compte-rendu de Réunion"
           show-size
           small-chips
           multiple
           clearable
           @click="mkdirProject(currentProject)"
-          @change="upload($event)"
+          @change="upload"
       >
         <template v-slot:selection="{ text, index}">
           <v-chip
@@ -41,7 +41,7 @@ export default {
   data(){
     return {
       currentProject: null,
-      currentFile : undefined,
+      currentFile : "",
       files: [],
       message: "",
     };
@@ -66,7 +66,6 @@ export default {
     },
 
     mkdirProject(project) {
-      console.log(project)
       FileDataService.mkdirProject(project).then((response) => {
         console.log(response.data.message);
       });
@@ -76,16 +75,21 @@ export default {
       this.files.splice(index, 1)
     },
 
-    async upload(e) {
-      console.log(e);
+    upload(e) {
 
-      var someFile = new File(e, 'test.pdf', {
-        contentType: "application/pdf"
-      })
+      this.currentFile = e[0];
 
-      FileDataService.upload(someFile, this.currentProject).then((response) => {
+      const formData = new FormData();
+
+      formData.append(this.currentFile.name, this.currentFile);
+
+      FileDataService.upload(formData, this.currentProject)
+          .then((response) => {
             console.log(response.data.message);
-          }).catch(e => Error(e));
+          })
+          .catch(err => {
+            console.log(err);
+      });
     }
   },
 };
