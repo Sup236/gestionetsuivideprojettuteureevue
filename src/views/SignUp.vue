@@ -1,9 +1,8 @@
 <template>
   <div class="submit-form mt-3 mx-auto">
     <p class="headline">Inscription</p>
-
     <div v-if="!submitted">
-      <v-form ref="form" lazy-validation>
+      <v-form ref="form" >
         <v-text-field
             v-model="user.name"
             :rules="[(v) => !!v || 'Il faut un nom']"
@@ -22,8 +21,9 @@
 
         <v-text-field
             v-model="user.email"
-            :rules="[(v) => !!v || 'Il faut une adresse mail']"
+            :rules="rules"
             label="email"
+            type="email"
             required
         >
         </v-text-field>
@@ -37,6 +37,7 @@
         >
         </v-text-field>
       </v-form>
+
 
       <v-btn color="primary" class="mt-3" @click="saveUser">Enregistrer</v-btn>
     </div>
@@ -58,7 +59,8 @@
 </template>
 
 <script>
-import AuthService from "@/services/auth.service";
+
+import AuthService from '../services/auth.service';
 
 export default {
   name: "SignUp",
@@ -73,13 +75,21 @@ export default {
         role: "",
         password: "",
       },
+      rules: [
+        value => !!value || 'Required.',
+        value => (value || '').length <= 20 || 'Max 20 characters',
+        value => {
+          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          return pattern.test(value) || 'Invalid e-mail.'
+        },
+      ],
       submitted: false
     };
   },
 
   methods: {
     saveUser(){
-      var data ={
+      let data ={
         name: this.user.name,
         firstName: this.user.firstName,
         email: this.user.email,
@@ -104,7 +114,7 @@ export default {
       this.$router.push("/SignIn");
     }
   }
-}
+};
 </script>
 
 <style>

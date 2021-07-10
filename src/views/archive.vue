@@ -22,6 +22,13 @@
           >
             mdi-archive
           </v-icon>
+          <v-icon
+              small
+              color="green darken-1"
+              @click="projectDetails(item)"
+          >
+            mdi-arrow-right-bold
+          </v-icon>
         </template>
         <template v-slot:no-data>
           <v-btn color="primary" @click="initialize">Reset</v-btn>
@@ -95,6 +102,10 @@ export default {
     production(project) {
       if (project.etat)
         ProjectDataService.archive(project.id)
+    },
+
+    projectDetails(project) {
+      this.$router.push(`/enseignant/projects:${project.id}`)
     },
 
     getDisplayProject(project) {

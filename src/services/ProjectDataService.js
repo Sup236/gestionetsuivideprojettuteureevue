@@ -1,20 +1,21 @@
 import http from "../http-common";
+import authHeader from "@/services/auth.header";
 
 class ProjectDataService {
     getAll() {
-        return http.get("/enseignant");
+        return http.get("/enseignant",{ headers: authHeader() });
     }
 
     getAllArchive() {
-        return http.get("/enseignant/archive");
+        return http.get("/enseignant/archive",{ headers: authHeader() });
     }
 
     get(id){
-        return http.get(`/enseignant${id}`);
+        return http.get(`/enseignant${id}`,{ headers: authHeader() });
     }
 
     create(data) {
-        return http.post("/enseignant", data);
+        return http.post("/enseignant", data,{ headers: authHeader() });
     }
 
     addUserInProject(user, project){
@@ -23,19 +24,19 @@ class ProjectDataService {
             {
                 projectId: project,
                 userId: user
-            });
+            },{ headers: authHeader() });
     }
 
     update(id, data) {
-        return http.put(`/enseignant${id}`, data);
+        return http.put(`/enseignant${id}`, data,{ headers: authHeader() });
     }
 
     delete(id) {
-        return http.delete(`/enseignant${id}`);
+        return http.delete(`/enseignant${id}`,{ headers: authHeader() });
     }
 
     archive(id) {
-        return http.post(`/enseignant${id}`)
+        return http.post(`/enseignant${id}`,{ headers: authHeader() })
     }
 }
 

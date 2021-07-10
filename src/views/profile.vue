@@ -1,14 +1,11 @@
 <template>
-  <div class="container">
-    <header class="jumbotron">
+  <div>
+    <header>
+      <h1>Profile: </h1>
       <h3>
-        <strong>{{currentUser.name}}</strong> Profile
+        {{currentUser.name}} {{currentUser.firstName}}
       </h3>
     </header>
-    <p>
-      <strong>Token:</strong>
-      {{currentUser.accessToken.substring(0, 20)}} ... {{currentUser.accessToken.substr(currentUser.accessToken.length - 20)}}
-    </p>
     <p>
       <strong>Id:</strong>
       {{currentUser.id}}
@@ -18,18 +15,35 @@
       {{currentUser.email}}
     </p>
     <strong>Authorities:</strong>
-    <ul>
-      <li v-for="(role,index) in currentUser.role" :key="index">{{role}}</li>
-    </ul>
+    <p v-if="currentUser.role === 0">Vous devez attendre qu'un admin vous donne l'autorisation qui vous convient</p>
+    <p v-if="currentUser.role === 1">Etudiant</p>
+    <p v-if="currentUser.role === 2">Enseignant</p>
+    <p v-if="currentUser.role === 3">Admin</p>
+    <div v-if="currentUser.role === 3">
+      <v-btn @click="adminPage" color="green">Gestion des utilisaters</v-btn>
+    </div>
+    <div v-if="currentUser.role === 2">
+      <v-btn @click="enseignantPage" color="green">Gestion des projets</v-btn>
+    </div>
+
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Profile',
+  name: 'profile',
   computed: {
     currentUser() {
       return this.$store.state.auth.user;
+    }
+  },
+  methods: {
+    adminPage(){
+      this.$router.push('/admin');
+    },
+
+    enseignantPage(){
+      this.$router.push('/enseignant');
     }
   },
   mounted() {

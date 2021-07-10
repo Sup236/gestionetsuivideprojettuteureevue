@@ -59,7 +59,7 @@
                       <v-col clos="12" sm="6" md="4">
                         <v-text-field
                             v-model="editedUser.email"
-                            :rules="[(v) => !!v || 'Il faut une adresse mail']"
+                            :rules="rules"
                             label="Email"
                             required
                         >
@@ -116,6 +116,7 @@
             small
             color="red"
             @click="deleteUser(item)"
+            v-if="currentUser.name !== item.name"
           >
             mdi-delete
           </v-icon>
@@ -153,6 +154,14 @@ export default {
   name: "admin",
   data(){
     return {
+      rules: [
+        value => !!value || 'Required.',
+        value => (value || '').length <= 20 || 'Max 20 characters',
+        value => {
+          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          return pattern.test(value) || 'Invalid e-mail.'
+        },
+      ],
       search: '',
       dialog: false,
       users: [],
@@ -161,7 +170,7 @@ export default {
         { text: "Noms",align: "Start", value: "name" },
         { text: "Prenoms", value: "firstName" },
         { text: "Mails", value: "email" },
-        { text: "Roles", value: "role" },
+        { text: "Rôles", value: "role" },
         { text: "Actions", value: "actions", sortable: false }
       ],
       editedIndex: -1,
@@ -181,7 +190,6 @@ export default {
         role: [0],
         password: ""
       },
-
       role: [0,1,2,3],
     };
   },
@@ -190,6 +198,9 @@ export default {
     formTitle () {
       return this.editedIndex === -1 ? 'Nouvel utilisateur' : 'Modification'
     },
+    currentUser() {
+      return this.$store.state.auth.user;
+    }
   },
 
   watch: {
@@ -199,6 +210,8 @@ export default {
   },
 
   created() {
+    if (this.currentUser.role !== 3)
+      this.$router.push('/profile');
     this.initialize()
   },
 
@@ -221,8 +234,9 @@ export default {
     },
 
     deleteUser (user) {
+      console.log(user)
       const index = this.users.indexOf(user);
-      confirm('êtes vous dur de vouloir suprimmer cette utilisateur ?') && this.users.splice(index, 1);
+      confirm('êtes vous sur de vouloir suprimmer cette utilisateur ?') && this.users.splice(index, 1);
       UserDataService.delete(user.id);
     },
 

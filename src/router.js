@@ -7,37 +7,28 @@ let router = new Router({
     mode: "history",
     routes:[
         {
-          path: "/SignIn",
-          name: "SignIn",
-          component: () => import("./views/SignIn"),
-          meta: {
-            guest: true
-          }
+          path: "/",
+          name: "home",
         },
         {
-          path: "/SignUp",
+          path: "/signIn",
+          name: "SignIn",
+          component: () => import("./views/SignIn"),
+        },
+        {
+          path: "/signUp",
           name: "SignUp",
           component: () => import("./views/SignUp"),
-            meta: {
-                guest: true
-            }
         },
         {
             path: "/enseignant/projects:id",
             name: "project-details",
             component: () => import("./views/Project"),
-            meta:{
-                requiresAuth: true
-            }
         },
         {
             path: "/admin",
             name: "admin",
             component: () => import("./views/admin"),
-            // meta: {
-            //     requiresAuth: true,
-            //     is_admin: true
-            // }
         },
         {
             path: "/enseignant",
@@ -50,7 +41,25 @@ let router = new Router({
             name: "archive",
             component: () => import("./views/archive"),
         },
+
+        {
+            path:"/profile",
+            name:"profile",
+            component: () => import("./views/profile"),
+        }
     ]
+});
+
+router.beforeEach((to, from, next) => {
+    const publicPages = ['/signIn', '/signUp'];
+    const authRequired = !publicPages.includes(to.path);
+    const loggedIn = localStorage.getItem('user');
+
+    if (authRequired && !loggedIn) {
+        next('/signIn');
+    }else {
+        next();
+    }
 });
 
 export default router;

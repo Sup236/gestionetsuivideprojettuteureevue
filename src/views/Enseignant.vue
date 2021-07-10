@@ -196,6 +196,9 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? 'Nouveau Projet' : 'Modification'
     },
+    currentUser() {
+      return this.$store.state.auth.user;
+    }
   },
 
   watch: {
@@ -205,6 +208,8 @@ export default {
   },
 
   created() {
+    if (this.currentUser.role !== 2)
+      this.$router.push('/profile');
     this.initialize();
     this.initializeEtudiants();
     this.initializeEnseignant();

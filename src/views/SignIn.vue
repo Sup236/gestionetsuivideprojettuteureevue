@@ -1,6 +1,6 @@
 <template>
   <div class="submit-form mt-3 mx-auto">
-    <p class="headline">Connextion</p>
+    <p class="headline">Connexion</p>
 
     <div v-if="!submitted">
       <v-form ref="form" lazy-validation>
@@ -27,35 +27,52 @@
 </template>
 
 <script>
-import AuthService from "@/services/auth.service";
-
 export default {
   name: "SignIn",
-
   data(){
     return{
       user: {
         name: "",
         password: "",
       },
+      loading: false,
       submitted: false
     };
   },
 
+  computed: {
+    loggedIn() {
+      return this.$store.state.auth.status.loggedIn;
+    }
+  },
+
+  created() {
+    if (this.loggedIn)
+      this.$router.push('/profile');
+  },
+
   methods: {
     connection() {
-      let data = {
-        name: this.user.name,
-        password: this.user.password,
-      }
-
-      AuthService.signIn(data).then((response) => {
-        this.user.name = response.data.name;
-        console.log(response.data);
-        this.submitted = true;
-      })
-      .catch((e) => {
-        console.log(e);
+      this.loading = true;
+      this.$validator.validateAll().then(isValid => {
+        if (!isValid) {
+          this.loading = false;
+          return;
+        }
+      if (this.user.name && this.user.password){
+        this.$store.dispatch('auth/login', this.user).then(
+            () => {
+              console.log(this.$store.state.auth.user);
+              this.$router.push('/profile');
+            },
+            error => {
+              this.loading = false;
+              this.message =
+                  (error.response && error.response.data) ||
+                  error.message ||
+                  error.toString();
+            });
+        }
       })
     }
   }
