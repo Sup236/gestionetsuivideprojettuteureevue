@@ -22,7 +22,7 @@ let router = new Router({
         },
         {
             path: "/enseignant/projects:id",
-            name: "project-details",
+            name: "enseignant-project-details",
             component: () => import("./views/Project"),
         },
         {
@@ -40,6 +40,18 @@ let router = new Router({
             path: "/enseignant/archive",
             name: "archive",
             component: () => import("./views/archive"),
+        },
+
+        {
+          path: "/etudiant",
+          name: "etudiant",
+          component: () => import("./views/Etudiant"),
+        },
+
+        {
+          path: "/etudiant/project:id",
+          name: "etudiant-project-details",
+          component: () => import("./views/Project"),
         },
 
         {

@@ -25,7 +25,9 @@
     <div v-if="currentUser.role === 2">
       <v-btn @click="enseignantPage" color="green">Gestion des projets</v-btn>
     </div>
-
+    <div v-if="currentUser.role === 1">
+      <v-btn @click="etudiantPage" color="green">Gestion des projets</v-btn>
+    </div>
   </div>
 </template>
 
@@ -44,6 +46,10 @@ export default {
 
     enseignantPage(){
       this.$router.push('/enseignant');
+    },
+
+    etudiantPage(){
+      this.$router.push('/etudiant');
     }
   },
   mounted() {

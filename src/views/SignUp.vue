@@ -89,7 +89,7 @@ export default {
 
   methods: {
     saveUser(){
-      let data ={
+      let data = {
         name: this.user.name,
         firstName: this.user.firstName,
         email: this.user.email,
