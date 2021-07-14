@@ -9,7 +9,7 @@ class UploadFilesService {
         formData.append("uploadFile", file);
 
             return http.post(`/enseignant/projects${id}/upload`, formData, {
-                headers: authHeader(),
+                headers: authHeader(true),
                 onUploadProgress
             });
     }
