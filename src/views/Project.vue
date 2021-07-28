@@ -7,10 +7,10 @@
       <upload-files></upload-files>
     </v-col>
     <v-col cols="12" md="3" v-if="!currentProject.etat || currentProject.etat && currentUser.role === 2">
-      gitlab
+      <git-components></git-components>
     </v-col>
     <Evaluation v-if="!currentProject.etat && currentUser.role === 2"></Evaluation>
-    <v-col cols="12" md="3" class="pa-5 ml-15" v-if="currentProject.etat || currentUser.role === 1">
+    <v-col align="center" justify="center" cols="12" md="3" class="pa-5 ml-15" v-if="currentProject.etat || currentUser.role === 1">
       <h5>Soutenance: {{ currentProject.noteSoutenance }}/20</h5>
       <h5>Rapport: {{ currentProject.noteRapport }}/20</h5>
       <h5>Technique: {{ currentProject.noteTechnique }}/20</h5>
@@ -25,13 +25,15 @@
 import ProjectDataService from "@/services/ProjectDataService";
 import Evaluation from "@/components/Evaluation";
 import UploadFiles from "@/components/UploadFiles";
+import GitComponents from "@/components/GitComponents";
 
 export default {
   name: "Project",
 
   components: {
     Evaluation,
-    UploadFiles
+    UploadFiles,
+    GitComponents
   },
 
   data(){

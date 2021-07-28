@@ -32,6 +32,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'app',
 
@@ -44,6 +45,7 @@ export default {
   methods: {
 
     logout() {
+      this.$store.dispatch('gitModule/logout')
       this.$store.dispatch('auth/logout').then(
           () => {
             this.$router.push('/');

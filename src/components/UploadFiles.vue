@@ -17,7 +17,8 @@
       <v-col cols="8">
         <v-file-input
             show-size
-            label="File input"
+            accept=".pdf, .odt, .md, .txt, .doc"
+            label="Compte-rendu .pdf/.odt/.md/.txt/.doc"
             @change="selectFile"
         ></v-file-input>
       </v-col>
@@ -39,7 +40,7 @@
         <v-subheader>Compte-rendu de réunion:</v-subheader>
         <v-list-item-group color="primary">
           <v-list-item v-for="(file, index) in fileInfos" :key="index">
-            <a :href="file.url">{{ file.name }}</a>
+            <a @click="download(file.name)">{{ file.name }}</a>
           </v-list-item>
         </v-list-item-group>
       </v-list>
@@ -49,11 +50,13 @@
 
 <script>
 import UploadService from "../services/UploadFilesService";
+import ProjectDataService from "@/services/ProjectDataService";
 
 export default {
   name: "upload-files",
   data() {
     return {
+      currentProject: null,
       currentFile: undefined,
       progress: 0,
       message: "",
@@ -61,10 +64,38 @@ export default {
       fileInfos: []
     };
   },
+
+  created(){
+    const currentURL = document.location.href;
+    const projectId = currentURL.substring(currentURL.lastIndexOf(":")+1);
+    this.getProject(projectId);
+  },
+
   methods: {
+    getProject(id){
+      ProjectDataService.get(id)
+          .then((response) => {
+            this.currentProject = response.data;
+            this.getFile(this.currentProject)
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+    },
+
+    getFile(project){
+      UploadService.getFiles(project).then((files) => {
+        if (!files)
+          this.fileInfos = [];
+        else
+          this.fileInfos = files.data;
+      });
+    },
+
     selectFile(file) {
       this.progress = 0;
       this.currentFile = file;
+      UploadService.mkdirProject(this.currentProject)
     },
 
     upload() {
@@ -75,15 +106,14 @@ export default {
 
       this.message = "";
 
-      UploadService.upload(this.currentFile, (event) => {
+      UploadService.upload(this.currentFile, this.currentProject,(event) => {
         this.progress = Math.round((100 * event.loaded) / event.total);
       })
           .then((response) => {
             this.message = response.data.message;
-            //return UploadService.getFiles();
-          })
-          .then((files) => {
-            this.fileInfos = files.data;
+            return UploadService.getFiles(this.currentProject).then((files) => {
+              this.fileInfos = files.data;
+            });
           })
           .catch(() => {
             this.progress = 0;
@@ -91,13 +121,29 @@ export default {
             this.currentFile = undefined;
           });
     },
-  },
 
-  mounted() {
-    // UploadService.getFiles().then(response => {
-    //   this.fileInfos = response.data;
-    // });
-  }
+    download(fileName) {
+      console.log(fileName);
+      const nameFile = fileName;
+      UploadService.download(this.currentProject,fileName).then(res => {
+        console.log(res);
+        let fileUrl = window.URL.createObjectURL(new Blob([res.data]));
+        let element = document.createElement('a');
+
+        // problème selon les formats de ficher
+
+        element.href = fileUrl
+        element.setAttribute('download', nameFile);
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+      });
+    }
+  },
 };
 </script>
 

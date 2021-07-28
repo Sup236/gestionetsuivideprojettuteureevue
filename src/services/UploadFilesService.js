@@ -2,6 +2,10 @@ import http from "../http-common";
 import authHeader from "@/services/auth.header";
 
 class UploadFilesService {
+    mkdirProject(data) {
+        return http.post(`/enseignant/projects${data.id}`, data);
+    }
+
     upload(file, project,onUploadProgress) {
         let formData = new FormData();
         let id = project.id
@@ -16,7 +20,14 @@ class UploadFilesService {
 
     getFiles(project) {
         let id = project.id;
-        return http.get(`/enseignant/projects${id}/upload`);
+        return http.get(`/enseignant/projects${id}/files`);
+    }
+
+    download(project, fileName) {
+        let id = project.id;
+        return http.get(`/enseignant/projects${id}/download${fileName}`, {
+            responseType: "blob"
+        });
     }
 }
 
