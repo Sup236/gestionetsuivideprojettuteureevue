@@ -6,16 +6,20 @@ class UploadFilesService {
         return http.post(`/enseignant/projects${data.id}`, data);
     }
 
-    upload(file, project,onUploadProgress) {
+    rmDirProject(data) {
+        return http.post(`/enseignant/project${data.id}/delete`, data);
+    }
+
+    upload(file, project, onUploadProgress) {
         let formData = new FormData();
         let id = project.id
 
         formData.append("uploadFile", file);
 
-            return http.post(`/enseignant/projects${id}/upload`, formData, {
-                headers: authHeader(true),
-                onUploadProgress
-            });
+        return http.post(`/enseignant/projects${id}/upload`, formData, {
+            headers: authHeader(true),
+            onUploadProgress
+        });
     }
 
     getFiles(project) {

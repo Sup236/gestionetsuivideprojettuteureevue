@@ -14,7 +14,7 @@
     </div>
 
     <v-row no-gutters justify="center" align="center">
-      <v-col cols="8">
+      <v-col cols="8" v-if="!currentUser.etat">
         <v-file-input
             show-size
             accept=".pdf, .odt, .md, .txt, .doc"
@@ -23,7 +23,7 @@
         ></v-file-input>
       </v-col>
 
-      <v-col cols="4" class="pl-2">
+      <v-col cols="4" class="pl-2" v-if="!currentUser.etat">
         <v-btn color="success" dark small @click="upload">
           Upload
           <v-icon right dark>mdi-cloud-upload</v-icon>
@@ -71,6 +71,12 @@ export default {
     this.getProject(projectId);
   },
 
+  computed: {
+    currentUser() {
+      return this.$store.state.auth.user;
+    }
+  },
+
   methods: {
     getProject(id){
       ProjectDataService.get(id)
@@ -95,7 +101,6 @@ export default {
     selectFile(file) {
       this.progress = 0;
       this.currentFile = file;
-      UploadService.mkdirProject(this.currentProject)
     },
 
     upload() {
@@ -129,8 +134,6 @@ export default {
         console.log(res);
         let fileUrl = window.URL.createObjectURL(new Blob([res.data]));
         let element = document.createElement('a');
-
-        // problème selon les formats de ficher
 
         element.href = fileUrl
         element.setAttribute('download', nameFile);

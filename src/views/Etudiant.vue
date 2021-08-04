@@ -13,6 +13,20 @@
           class="elevation-1"
           hide-default-footer
       >
+        <template v-slot:top>
+          <v-toolbar flat color="white">
+            <v-toolbar-title>Projets Tuteurées</v-toolbar-title>
+            <v-divider class="mx-4" inset vertical></v-divider>
+            <v-spacer></v-spacer>
+            <v-btn color="amber accent-3"
+                   dark
+                   class="mb-2 mr-8"
+                   @click="archivePage"
+            >
+              Archive
+            </v-btn>
+          </v-toolbar>
+        </template>
         <template v-slot:item.actions="{ item }">
           <v-icon
               small
@@ -40,6 +54,7 @@ export default {
   data() {
     return {
       search: '',
+      allProject: [],
       projects: [],
       etudiants: [],
       enseignants: [],
@@ -55,14 +70,28 @@ export default {
 
   created() {
     this.initialize();
+    this.initializeEnseignant();
+    this.initializeEtudiants();
+  },
+
+  computed: {
+    currentUser() {
+      return this.$store.state.auth.user;
+    },
   },
 
   methods: {
     initialize() {
       ProjectDataService.getAll()
           .then((response) => {
-            this.projects = response.data.map(this.getDisplayProject);
-            console.log(response.data);
+            this.allProjects = response.data.map(this.getDisplayProject);
+            this.allProjects.forEach(project => {
+              project.etudiants.forEach(etudiant => {
+                if (this.currentUser.name === etudiant){
+                  this.projects.push(project);
+                }
+              })
+            })
           })
           .catch((e) => {
             console.log(e);
@@ -115,6 +144,10 @@ export default {
         enseignants: enseignantList,
       };
     },
+
+    archivePage() {
+      return this.$router.push('/enseignant/archive')
+    }
   }
 }
 </script>

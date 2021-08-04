@@ -34,14 +34,11 @@ export default {
   name: "Evaluation",
   data(){
     return {
-      currentProject: null,
-      enseignantInProject: false,
-    }
-  },
-
-  computed: {
-    currentUser() {
-      return this.$store.state.auth.user;
+      currentProject: {
+        noteSoutenance: null,
+        noteRapport: null,
+        noteTechnique: null,
+      }
     }
   },
 

@@ -152,6 +152,7 @@
 <script>
 import ProjectDataService from "@/services/ProjectDataService";
 import UserDataService from "@/services/UserDataService";
+import UploadFilesService from "@/services/UploadFilesService";
 
 export default {
   name: "Enseignant",
@@ -257,8 +258,10 @@ export default {
 
     deleteProject(project) {
       const index = this.projects.indexOf(project);
-      if (confirm('êtes vous sur de vouloir suprimmer se projet ?') && this.projects.splice(index, 1))
+      if (confirm('êtes vous sur de vouloir suprimmer se projet ? car tous ce qui le concerne sera supprimé') && this.projects.splice(index, 1)) {
+        UploadFilesService.rmDirProject(project);
         ProjectDataService.delete(project.id);
+      }
     },
 
     close() {

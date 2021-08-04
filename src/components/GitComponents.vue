@@ -87,8 +87,8 @@ import ProjectDataService from "@/services/ProjectDataService";
 
 export default {
   name: "git-components",
-  data(){
-    return{
+  data() {
+    return {
       currentProject: null,
       dialog: false,
       gitlab: {
@@ -112,14 +112,14 @@ export default {
     },
   },
 
-  created(){
+  created() {
     const currentURL = document.location.href;
-    const projectId = currentURL.substring(currentURL.lastIndexOf(":")+1);
+    const projectId = currentURL.substring(currentURL.lastIndexOf(":") + 1);
     this.getProject(projectId);
   },
 
   methods: {
-    getProject(id){
+    getProject(id) {
       ProjectDataService.get(id)
           .then((response) => {
             this.currentProject = response.data;
@@ -133,15 +133,22 @@ export default {
       this.currentFile = file;
     },
 
-    close(){
+    close() {
       this.dialog = false;
     },
 
-    save(){
-      console.log(this.gitlab);
-      GitDataService.initRepository(this.gitlab, this.currentProject).then(res => {
-        console.log(res);
-      });
+    save() {
+      if (!this.currentFile) {
+        this.message = "Please select a file!";
+        return;
+      }
+
+      GitDataService.uploadForPush(this.currentFile, this.currentProject).then(res => {
+        console.log(res.data);
+        GitDataService.initRepository(this.gitlab, this.currentProject).then(res => {
+          console.log('tamère le test '+res.data);
+        });
+      })
 
       this.close();
     }

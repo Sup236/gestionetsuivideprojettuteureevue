@@ -19,6 +19,7 @@
             class="mr-2"
             @click="production(item)"
             color="amber accent-3"
+            v-if="currentUser.role === 2"
           >
             mdi-archive
           </v-icon>
@@ -65,6 +66,12 @@ export default {
     this.initialize();
   },
 
+  computed: {
+    currentUser() {
+      return this.$store.state.auth.user;
+    }
+  },
+
   methods: {
     initialize() {
       ProjectDataService.getAllArchive()
@@ -100,8 +107,7 @@ export default {
     },
 
     production(project) {
-      if (project.etat)
-        ProjectDataService.archive(project.id)
+      ProjectDataService.archive(project.id)
     },
 
     projectDetails(project) {

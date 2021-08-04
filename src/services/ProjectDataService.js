@@ -36,7 +36,7 @@ class ProjectDataService {
     }
 
     archive(id) {
-        return http.post(`/enseignant${id}`,{ headers: authHeader() })
+        return http.put(`/enseignant${id}`,{etat: false},{ headers: authHeader() })
     }
 }
 
