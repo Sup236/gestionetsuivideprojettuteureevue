@@ -1,7 +1,8 @@
 <template>
   <v-row align="center" class="list px-3 mx-auto">
     <v-col cols="12" md="8">
-      <v-text-field v-model="search" label="Recherche" append-icon="mdi-magnify" single-line hide-details></v-text-field>
+      <v-text-field v-model="search" label="Recherche" append-icon="mdi-magnify" single-line
+                    hide-details></v-text-field>
     </v-col>
 
     <v-col cols="12" sm="12">
@@ -134,9 +135,9 @@
             mdi-delete
           </v-icon>
           <v-icon
-            small
-            color="green darken-1"
-            @click="projectDetails(item)"
+              small
+              color="green darken-1"
+              @click="projectDetails(item)"
           >
             mdi-arrow-right-bold
           </v-icon>
@@ -217,10 +218,10 @@ export default {
   },
 
   methods: {
-    initializeEnseignant(){
+    initializeEnseignant() {
       UserDataService.getEnseignant().then((response) => {
         const dataEnseignant = JSON.parse(JSON.stringify(response.data));
-        for (let i = 0; i < dataEnseignant.length; i++){
+        for (let i = 0; i < dataEnseignant.length; i++) {
           this.enseignants.push(dataEnseignant[i]);
         }
       }).catch((e) => {
@@ -278,25 +279,18 @@ export default {
     save() {
       if (this.editedIndex > -1) {
         Object.assign(this.projects[this.editedIndex], this.editedProject);
-        if (this.editedProject.sujet !== this.projects[this.editedIndex].sujet ||
-            this.editedProject.annee !== this.projects[this.editedIndex].annee ||
-            this.projects[this.editedIndex].etat) {
-          ProjectDataService.update(this.editedProject.id, this.editedProject).then((response) => {
-            console.log("Update: " + response.data.message);
-          })
-        }
-        if (this.editedProject.etudiants !== []) {
-          console.log(this.editedProject.etudiants)
+        ProjectDataService.update(this.editedProject.id, this.editedProject).then((response) => {
+          console.log("Update: " + response.data.message);
+        })
 
+        if (this.editedProject.etudiants !== []) {
           this.editedProject.etudiants.forEach(user => {
             ProjectDataService.addUserInProject(user.id, this.editedProject.id)
           })
         }
-        if (this.editedProject.enseignants !== []) {
-          console.log(this.editedProject.enseignants)
 
+        if (this.editedProject.enseignants !== []) {
           this.editedProject.enseignants.forEach(user => {
-            console.log(user);
             ProjectDataService.addUserInProject(user.id, this.editedProject.id)
           })
         }
@@ -339,7 +333,7 @@ export default {
         if (user.role === 1) {
           this.etudiants.push(user)
           etudiantList.push(user.name)
-        }else if (user.role === 2) {
+        } else if (user.role === 2) {
           this.enseignants.push(user)
           enseignantList.push(user.name)
         }
@@ -360,6 +354,8 @@ export default {
 
   mounted() {
     this.initialize();
+    this.initializeEtudiants();
+    this.initializeEnseignant();
   },
 };
 </script>

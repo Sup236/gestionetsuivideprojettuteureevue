@@ -6,7 +6,7 @@
     <v-col cols="12" md="4">
       <upload-files></upload-files>
     </v-col>
-    <v-col cols="12" md="3" v-if="!currentProject.etat || currentProject.etat && currentUser.role === 2">
+    <v-col cols="12" md="4" v-if="!currentProject.etat || currentProject.etat && currentUser.role === 2">
       <git-components></git-components>
     </v-col>
     <Evaluation v-if="!currentProject.etat && currentUser.role === 2"></Evaluation>
@@ -46,7 +46,6 @@ export default {
   data(){
     return {
       currentProject: null,
-      enseignantInProject: false,
     };
   },
 

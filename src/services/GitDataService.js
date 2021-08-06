@@ -12,11 +12,16 @@ class GitDataService {
     uploadForPush(file, project) {
         let formData = new FormData();
         const id = project.id;
-        console.log(file)
         formData.append("uploadFile", file);
         return http.post(`/enseignant/projects${id}/pushFile`, formData, {
             headers: authHeader(true),
         })
+    }
+
+    lastCommit(id) {
+        return http.get(`/enseignant/projects${id}/lastCommit`, {
+            headers: authHeader(),
+        });
     }
 }
 

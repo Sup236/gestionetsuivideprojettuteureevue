@@ -71,6 +71,7 @@ export default {
                   (error.response && error.response.data) ||
                   error.message ||
                   error.toString();
+              window.alert("Votre nom ou votre mot de passe est incorrect");
             });
         }
       })
