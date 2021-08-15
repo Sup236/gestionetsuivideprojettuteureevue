@@ -1,3 +1,7 @@
+<!--
+  Cette page permet de choisir un dépôt final lorsque l'on est enseignant et de l'activer pour que les étudiant puisse le voir
+  Il s'agit simplement d'un lien vers moodle
+-->
 <template>
   <v-col cols="12" md="4">
     <div v-if="currentUser.role === 2">

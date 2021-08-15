@@ -1,10 +1,10 @@
+<!--
+  Même système d'affichage que admin.vue
+  Ici nous pouvons créer/modifier/supprimer un projet
+
+-->
 <template>
   <v-row align="center" class="list px-3 mx-auto">
-    <v-col cols="12" md="8">
-      <v-text-field v-model="search" label="Recherche" append-icon="mdi-magnify" single-line
-                    hide-details></v-text-field>
-    </v-col>
-
     <v-col cols="12" sm="12">
       <v-data-table
           :headers="headers"
@@ -14,8 +14,15 @@
       >
         <template v-slot:top>
           <v-toolbar flat color="white">
-            <v-toolbar-title>Projets Tuteurées</v-toolbar-title>
+            <v-toolbar-title>Projets Tuteurés</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
+            <v-text-field
+                v-model="search"
+                label="Recherche"
+                append-icon="mdi-magnify"
+                single-line hide-details
+                class="mx-16"
+            ></v-text-field>
             <v-spacer></v-spacer>
             <v-btn color="amber accent-3"
                    dark

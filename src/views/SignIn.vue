@@ -1,3 +1,6 @@
+<!--
+  Sur cette page on retrouve le formulaire de connexion
+-->
 <template>
   <div class="submit-form mt-3 mx-auto">
     <p class="headline">Connexion</p>
@@ -27,6 +30,18 @@
 </template>
 
 <script>
+/**
+ * @vue-data {object, boolean, boolean} user - Contien les valeurs utilisateur dont nous avons besoin pour la connexion
+ * loading - Valeur boolean pour indiquer si la connexion est en cour ou non
+ * submitted - valeur boolean pour indiquer si le formulaire a été rempli
+ *
+ * @vue-computed {boolean} loggedIn - Indique s'il y a un utilisateur de connecté
+ *
+ * @vue-event {route} created - redirige vers la page profile si loggedIn est true
+ * @vue-event {boolean ,route || alert} connection - Verifie si les valeurs du formulaire son valide,
+ * Si la connection réussi redirige vers la page profile,
+ * Sinon affiche un message d'alert
+ */
 export default {
   name: "SignIn",
   data(){
@@ -62,7 +77,6 @@ export default {
       if (this.user.name && this.user.password){
         this.$store.dispatch('auth/login', this.user).then(
             () => {
-              console.log(this.$store.state.auth.user);
               this.$router.push('/profile');
             },
             error => {

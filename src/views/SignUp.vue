@@ -1,3 +1,6 @@
+<!--
+  Dans cette vue On y retrouve le formilaire de création de compte
+-->
 <template>
   <div class="submit-form mt-3 mx-auto">
     <p class="headline">Inscription</p>
@@ -59,9 +62,16 @@
 </template>
 
 <script>
-
 import AuthService from '../services/auth.service';
 
+/**
+ * @vue-data {object, [], boolean} user - Contien toutes les valeurs dont est composer un utilisateur
+ * rules - Contien les règles pour identifier une adresse mail
+ * submitted - Valeur boolean pour savoir si le formulaire a été rempli ou pas
+ *
+ * @vue-event {object} saveUser - retourne l'utilisateur avec son id et met submitted a true
+ * @vue-event {boolean, object, route} signIn - Passe submitted à false, user à vide et redirige vers la page de connexion
+ */
 export default {
   name: "SignUp",
 

@@ -11,11 +11,14 @@ Vue.config.productionTip = false
 
 Vue.use(VeeValidate);
 
+/**
+ * On créer une vue avec le diférents plugins et librairie dont on a besoin pour l'application
+ */
 new Vue({
-  vuetify,
-  router,
-  store,
-  cors,
+  vuetify, // Plugins graphique
+  router, // Facilité la navigation dans l'application
+  store, // Permet ici de géré un utilisateur connecté
+  cors, // Est utiliser pour les requetes au serveur back end
 
   render: h => h(App)
 }).$mount('#app')

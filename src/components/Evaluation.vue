@@ -1,3 +1,7 @@
+<!--
+  Cette page permet d'évaluer si on est enseignant et d'afficher les notes d'un projet si on est étudiant
+  Cette page fonctionne de la même manière que pour update un projet ou un utilisateur, voir admin.vue pour le script
+-->
 <template>
   <v-col cols="12" md="3" class="pa-5 ml-15">
     <h5>Soutenance: </h5>

@@ -1,3 +1,10 @@
+<!--
+  Cette vue est la vue principale,
+  Elle contient la barre de navigation de l'application
+  Ainsi que les différents bouton de navigation/connexion
+  Certain bouton ne s'affiche que lorsque l'utilisateur est connecté (les boutons de déconnexion et de profile)
+  Les autres ne s'affiche que quand il n'y a personne de connecté
+ -->
 <template>
   <v-app>
     <v-app-bar app dark>
@@ -32,7 +39,13 @@
 </template>
 
 <script>
-
+/**
+ * @vue-computed {boolean} loggedIn - Indique s'il y a un utilisateur de connecté
+ *
+ * @vue-event {route || alert} logout - Fait appelle à la fonction logout qui se trouve dans le store
+ * Si elle réussi elle revoie vers la première page
+ * Sinon elle affiche l'erreur
+ */
 export default {
   name: 'app',
 

@@ -1,11 +1,19 @@
+<!--
+  Cette page contien un formulaire pour commit et push sur le gitlab de l'iut
+  Elle contien également la liste des commits du dernier dépôt utiliser pour commit et push
+  Cette liste pocède les mêmes fonctionnalité que la liste des utilisateurs dans admin.vue à l'exiption des actions
+-->
 <template>
   <v-col>
     <v-btn
         @click="clone"
         v-if="currentProject.clone"
-        color="green"
+        color="success"
+        small
+        dark
     >
       clone
+      <v-icon right dark>mdi-cloud-download</v-icon>
     </v-btn>
     <v-dialog v-model="dialog" max-width="800px">
       <template v-slot:activator="{ on, attrs }">
@@ -109,6 +117,31 @@
 import GitDataService from "../services/GitDataService";
 import ProjectDataService from "@/services/ProjectDataService";
 
+/**
+ * @vue-data {string, object, boolean, object, [object], object, [object]}
+ * search - Permet la recherche dans v-data-table
+ * currentProject - Contien un élément de project à modifier, clone permet de stocker l'url qui redirige vers le dépôt du projet
+ * dialog - Boolean permetant d'afficher ou non le formulaire pour commit et push
+ * gitlab - Contien les information pour commit et push
+ * headers - Contien la liste des différentes colonnes de v-data-table, pour les parametres voir admin.vue
+ * lastCommit - Contien les informations du dernier commit
+ * latestCommit - Contien la liste des derniers commit
+ *
+ * @vue-computed {object} currentUser - renvoie l'utilisateur courant
+ *
+ * @vue-watch {} dialog - Permet d'afficher ou non les formulaire
+ *
+ * @vue-event {} created - Récupère le projet courant et les derniers commit si c possible
+ * @vue-event {project} getProject - Permet de récupéré le projet courant
+ * @vue-event {file} selectFile - Permet de récupéré le fichié selectionné pour le push
+ * @vue-event {} close - Ferme la boite de dialog
+ * @vue-event {message} save - Permet de modifier la valeur de currentProject.clone,
+ * Upload le ficher selection pour pouvoir le push en suite
+ * @vue-event {[]} getLatestCommit - Récupère la liste des derniers commits
+ * @vue-event {} getDisplayCommit - Permet le bonne affichage des commits
+ * @vue-event {windows.location} clone - Redirige vers le dépôt gitlab du projet
+ * @vue-event {} mounted - Réinitialize les derniers commit
+ */
 export default {
   name: "git-components",
   data() {
@@ -218,7 +251,6 @@ export default {
     },
 
     clone() {
-      console.log(this.currentProject.clone);
       window.location.href = this.currentProject.clone;
     }
   },

@@ -16,7 +16,9 @@ library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt);
 Vue.use(Vuetify);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 
-
+/**
+ * Ici nous configurons vuetify pour avoir accès à différent type d'icon graphique
+ */
 export default new Vuetify({
     data: () => ({
         items: UserDataService.getAdmin(),

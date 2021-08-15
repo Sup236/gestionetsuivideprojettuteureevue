@@ -2,7 +2,9 @@ import Vue from "vue";
 import Router from "vue-router";
 
 Vue.use(Router);
-
+/**
+ * On retrouve Ici les diférentes route de navigation
+ */
 let router = new Router({
     mode: "history",
     routes:[
@@ -62,6 +64,10 @@ let router = new Router({
     ]
 });
 
+/**
+ * Ceci est un garde de navigation
+ * Il permet de protéger la navigation en redirigant à un endroit approprié
+ */
 router.beforeEach((to, from, next) => {
     const publicPages = ['/signIn', '/signUp'];
     const authRequired = !publicPages.includes(to.path);
@@ -74,4 +80,7 @@ router.beforeEach((to, from, next) => {
     }
 });
 
+/**
+ * Comme en NodeJs ce module est exporté pour être utiliser dans le reste de l'application
+ */
 export default router;
