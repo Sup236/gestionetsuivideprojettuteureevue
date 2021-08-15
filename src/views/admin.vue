@@ -271,8 +271,8 @@ export default {
 
     deleteUser (user) {
       const index = this.users.indexOf(user);
-      confirm('êtes vous sur de vouloir suprimmer cette utilisateur ?') && this.users.splice(index, 1);
-      UserDataService.delete(user.id);
+      if (confirm('êtes vous sur de vouloir suprimmer cette utilisateur ?') && this.users.splice(index, 1))
+        UserDataService.delete(user.id);
     },
 
     close () {
